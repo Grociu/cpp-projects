@@ -1,0 +1,9 @@
+To run this CMake script:
+
+1. Install CMake and the CMake extension for Visual Studio Code
+2. Set up the working dictionary for VSC as the main directory of the particular project
+3. IF NEEDED: Delete the build directory inside the project.
+4. Use the VSC command to (ctrl+shift+P) CMake Build, or 'Save' the CMakeLists.txt or let the script run automatically (VSC Functionality)
+5. After the build is successful, use the (ctrl+shift+P) CMake Install Functionality of VSC.
+
+Main executable should be in the root dictionary of the current project.
