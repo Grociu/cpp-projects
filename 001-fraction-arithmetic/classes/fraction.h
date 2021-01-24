@@ -4,14 +4,15 @@
 class Fraction
 {
     public:
-        double numerator;
-        double denominator;
+        long int numerator;
+        long int denominator;
         // Constructors
         Fraction(double x, double y);
         Fraction(double x);
         Fraction();
-        void output();
 
+        void output();
+        friend int number_of_decimals(double x);
 };
 
 #endif
