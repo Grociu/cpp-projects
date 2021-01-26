@@ -76,8 +76,7 @@ void Fraction::sign()
     {
         positive = !positive;
     }
-    this->numerator = positive ? abs(this->numerator) : -abs(this->numerator);
-    //int points = guess == answer ? 10 : 0;
+    this->numerator = positive ? abs(this->numerator) : -abs(this->numerator);  // ternary operator
     this->denominator = abs(this->denominator);
 }
 
