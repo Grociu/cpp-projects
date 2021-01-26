@@ -2,6 +2,59 @@
 #include "gtest/gtest.h"
 
 /***********************************************************************
+THESE TESTS CHECK IF THE COMPANION FUNCTIONS WORK CORRECTLY
+***********************************************************************/
+
+/***********************************************************************
+Greatest Common Divisor
+***********************************************************************/
+
+TEST(GCDTests, GCDFunctionTestForOnes)
+{
+    EXPECT_EQ(greatest_common_divisor(1, 1), 1);
+}
+
+TEST(GCDTests, GCDFunctionTestForZero)
+{
+    EXPECT_EQ(greatest_common_divisor(0, 1), 1);
+}
+
+TEST(GCDTests, GCDFunctionTestForZero2)
+{
+    EXPECT_EQ(greatest_common_divisor(1, 0), 1);
+}
+
+TEST(GCDTests, GCDFunctionTestPrimes)
+{
+    EXPECT_EQ(greatest_common_divisor(3, 5), 1);
+}
+
+TEST(GCDTests, GCDFunctionTestOneDivisor)
+{
+    EXPECT_EQ(greatest_common_divisor(6, 9), 3);
+}
+
+TEST(GCDTests, GCDFunctionTestTwoSameDivisors)
+{
+    EXPECT_EQ(greatest_common_divisor(4, 8), 4);
+}
+
+TEST(GCDTests, GCDFunctionTestTwoDifferentDivisors)
+{
+    EXPECT_EQ(greatest_common_divisor(40, 70), 10);
+}
+
+TEST(GCDTests, GCDFunctionTestIrregularFraction)
+{
+    EXPECT_EQ(greatest_common_divisor(5000, 65), 5);
+}
+
+TEST(GCDTests, GCDFunctionTestLongAlgorithm)
+{
+    EXPECT_EQ(greatest_common_divisor(1701, 3768), 3);
+}
+
+/***********************************************************************
 THESE TESTS CHECK IF THE FRACTIONS ARE CREATED CORRECTLY
 ***********************************************************************/
 

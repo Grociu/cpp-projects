@@ -2,9 +2,11 @@
 #include <iostream>
 #include "fraction.h"
 
-// For a double x returns the number of places after a decimal spot.
-// For an integer it should be zero, for a decimal like 1.345 it should be 3
-// Precision up to 12 numbers, returns 12 if higher
+/*
+For a double x returns the number of places after a decimal spot.
+For an integer it should be zero, for a decimal like 1.345 it should be 3
+Precision up to 12 numbers, returns 12 if higher
+*/
 int number_of_decimals(double x)
 {
     double tracker = x;
@@ -18,12 +20,75 @@ int number_of_decimals(double x)
 }
 
 /*
+Implementation of Euclidean algorithm to find the greatest common divisor of
+positive integers 'x' and 'y'.
+https://en.wikipedia.org/wiki/Euclidean_algorithm
+*/
+int greatest_common_divisor(int x, int y)
+{
+    int temp;
+    while(y != 0)
+    {
+        temp = y;
+        y = x % y;
+        x = temp;
+    }
+    return x;
+}
+
+/*
 Outputs the Fraction to the console.
 Placeholder function until the '>>' operator can be overloaded.
 */
 void Fraction::output()
 {
     std::cout << "[ " << this->numerator << " / " << this->denominator << " ]";
+}
+
+/*
+Simplifies the numerator and denominator of a Fraction by dividing it by the
+greatest common divisor.
+*/
+void Fraction::simplify()
+{
+    int hcd = greatest_common_divisor(
+        abs(this->numerator), abs(this->denominator)
+        );
+    this->numerator = this->numerator / hcd;
+    this->denominator = this->denominator / hcd;
+}
+
+/*
+Figures out the correct sign (+ or -) of the fraction and moves it to the
+numerator.
+Ex. -1 / 2 => -1 / 2
+Ex. 1 / -2 => -1 / 2
+Ex. - 1 / -2 => 1 / 2
+*/
+void Fraction::sign()
+{
+    bool positive = true;
+    if(this->numerator < 0)
+    {
+        positive = !positive;
+    }
+    if(this->denominator < 0)
+    {
+        positive = !positive;
+    }
+    this->numerator = positive ? abs(this->numerator) : -abs(this->numerator);
+    //int points = guess == answer ? 10 : 0;
+    this->denominator = abs(this->denominator);
+}
+
+/*
+Perform a series of checks to determine the correcto representation of the 
+fraction.
+*/
+void Fraction::validate()
+{
+    this->simplify();
+    this->sign();
 }
 
 /***********************************************************************
@@ -63,6 +128,7 @@ Fraction::Fraction(double x, double y)
         this->numerator = (x * pow(10, x_decimals + y_decimals));
         this->denominator = (y * pow(10, x_decimals + y_decimals));
     }
+    this->validate();
 }
 
 Fraction::Fraction(double x) : Fraction::Fraction(x, 1) {} // This is called 'delegating constructors' it's a C++11 feature.
