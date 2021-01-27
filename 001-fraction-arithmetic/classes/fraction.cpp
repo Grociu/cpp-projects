@@ -3,23 +3,6 @@
 #include "fraction.h"
 
 /*
-For a double x returns the number of places after a decimal spot.
-For an integer it should be zero, for a decimal like 1.345 it should be 3
-Precision up to 12 numbers, returns 12 if higher
-*/
-int number_of_decimals(double x)
-{
-    double tracker = x;
-    int decimals = 0;
-    while(tracker != (int(tracker)) && decimals < 12)
-    {
-        decimals++;
-        tracker = tracker*10;
-    }
-    return decimals;
-}
-
-/*
 Implementation of Euclidean algorithm to find the greatest common divisor of
 positive integers 'x' and 'y'.
 https://en.wikipedia.org/wiki/Euclidean_algorithm
@@ -94,13 +77,14 @@ void Fraction::validate()
 The main constructor of the Fraction class.
 If both arguments are integers sets the first argument as the numerator,
 and the second as the denominator.
-If any are decimal numbers, performs a multiplications by powers of 10
-to each non integer argument and sets numerator and denominator to the
+If any are decimal numbers, performs a double division and the result is then
+multiplied by 10 to power of Fraction class precision (6).
+The numerator is then rounded, and both numerator and denominator are set to the
 correct values.
 Ex. 1.5 can be written as 1.5 * 10 / 10
 Ex. 2.5 / 2.85 can be written as (2.5 * 10) * 100 / 10 * (2.85 * 100)
-Not Yet Implemented: Then a simplification is performed. Ex. 4/8 == 1/2
-Not Yet Implemented: Then a sign is extracted to the numerator.
+Then a simplification is performed. Ex. 4/8 == 1/2
+Then a sign is extracted to the numerator.
 Ex. 1 / -1 == -1 / 1 AND -2 / -3 == 2 / 3
 ***********************************************************************/
 Fraction::Fraction(double x, double y)
@@ -112,20 +96,12 @@ Fraction::Fraction(double x, double y)
     }
     else
     {
-        int x_decimals = 0;
-        int y_decimals = 0;
-
-        if(x != int(x))
-        {
-            x_decimals = number_of_decimals(x);
-        }
-        if(y != int(y))
-        {
-            y_decimals = number_of_decimals(y);
-        }
-
-        this->numerator = (x * pow(10, x_decimals + y_decimals));
-        this->denominator = (y * pow(10, x_decimals + y_decimals));
+        double value = x / y;
+        long int denominator = pow(10, this->precision);
+        value = value * denominator;
+        value = round(value);
+        this->numerator = value;
+        this->denominator = denominator;
     }
     this->validate();
 }

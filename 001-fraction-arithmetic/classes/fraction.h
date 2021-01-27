@@ -4,6 +4,8 @@
 // Main Fraction Class
 class Fraction
 {
+    private:
+        static const int precision = 6;  // Governs the precision of conversion from double to integer
     public:
         long int numerator;
         long int denominator;
