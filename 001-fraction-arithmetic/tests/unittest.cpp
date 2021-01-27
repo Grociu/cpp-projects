@@ -125,6 +125,48 @@ TEST(FractionCreationTests, FractionCreatedFromDecimalArgumentsisSimplified)
     EXPECT_EQ(test_fraction.denominator, 125);
 }
 
+// This test creates a set  of decimal fractions to test the precision of the 
+// Fraction making algorithm for decimal numbers.
+TEST(FractionCreationTests, PrecisionTestingForFractionCreation)
+{
+    const int test_cases_size = 26;
+    double test_cases[][3] =
+    {
+        {0, 0, 1},  // double, numerator, denominator
+        {-54342, -54342, 1},
+        {1.1, 11, 10},
+        {1.8, 9, 5},
+        {-1.7, -17, 10},
+        {-1.8, -9, 5},
+        {2.79, 279, 100},
+        {2.12, 53, 25},
+        {-2.88, -72, 25},
+        {-2.95, -59, 20},
+        {3.123, 3123, 1000},
+        {3.998, 1999, 500},
+        {-3.124, -781, 250},
+        {-3.003, -3003, 1000},
+        {4.0001, 40001, 10000},
+        {4.9983, 49983, 10000},
+        {-4.1255, -8251, 2000},
+        {-4.5555, -9111, 2000},
+        {5.00342, 250171, 50000},
+        {5.55559, 555559, 100000},
+        {-5.00032, -15626, 3125},
+        {-5.99925, -23997, 4000},
+        {6.123453, 6123453, 1000000},
+        {6.250252, 1562563, 250000},
+        {-6.666666, -3333333, 500000},
+        {-6.969696, -217803, 31250} //size 26
+    };
+    for(int i = 0; i < test_cases_size; i++)
+    {
+        Fraction test_fraction = Fraction(test_cases[i][0]);
+        EXPECT_EQ(test_fraction.numerator, test_cases[i][1]) << "Unprecise conversion of " << test_cases[i][0] << std::endl;
+        EXPECT_EQ(test_fraction.denominator, test_cases[i][2]) << "Unprecise conversion of " << test_cases[i][0] << std::endl;
+    }
+}
+
 /***********************************************************************
 ***********************************************************************/
 
