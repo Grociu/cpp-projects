@@ -13,6 +13,13 @@ class Fraction
         Fraction(double x, double y);
         Fraction(double x);
         Fraction();
+        // Operators
+        bool operator == (Fraction compared_fraction);
+        bool operator != (Fraction compared_fraction);
+        bool operator > (Fraction compared_fraction);
+        bool operator >= (Fraction compared_fraction);
+        bool operator < (Fraction compared_fraction);
+        bool operator <= (Fraction compared_fraction);
         // Methods
         void output();
         void simplify();

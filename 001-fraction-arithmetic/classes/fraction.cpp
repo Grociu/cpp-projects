@@ -73,6 +73,67 @@ void Fraction::validate()
     this->sign();
 }
 
+/*
+Equality operator for the Fraction class.
+Two fractions are equal when their numerator and denominator are equal.
+Fractions are simplified during construction, so Fraction(1, 2) == Fraction(2, 4).
+*/
+bool Fraction::operator == (Fraction compared_fraction)  // boolean for comparison
+{
+    return numerator == compared_fraction.numerator &&
+           denominator == compared_fraction.denominator;
+}
+
+/*
+Not Equal operator for the Fraction class.
+Two fractions are not equal when either their numerator or denominator are different.
+Fractions are simplified during construction, so Fraction(1, 2) == Fraction(2, 4).
+*/
+bool Fraction::operator != (Fraction compared_fraction)
+{
+    return !(*this == compared_fraction);
+}
+
+/*
+Is Greater Than operator for the Fraction class.
+Raises both numerators to a common denominator and complares the values.
+A fraction is greater than another when it's numerator multiplied by (positive)
+denominator of the other is greater than the other fractions numerator multiplied 
+by original denominator
+Ex: 1 / 3  > 1 / 5 because 1 * 5 > 3 * 1
+Ex: -2 / 5 > - 6 / 7 because -2 * 7 (-14) > 5 * -6 (-30)
+*/
+bool Fraction::operator > (Fraction compared_fraction)
+{
+    return numerator * compared_fraction.denominator > compared_fraction.numerator * denominator;
+}
+
+// The following three operators are derived from the above basic operators:
+
+/*
+Is Smaller Than operator for the Fraction class.
+*/
+bool Fraction::operator < (Fraction compared_fraction)
+{
+    return (*this != compared_fraction) && !(*this > compared_fraction);
+}
+
+/*
+Is Greater or Equal Than operator for the Fraction class.
+*/
+bool Fraction::operator >= (Fraction compared_fraction)
+{
+    return (*this == compared_fraction) || (*this > compared_fraction);
+}
+
+/*
+Is Smaller or Equal Than operator for the Fraction class.
+*/
+bool Fraction::operator <= (Fraction compared_fraction)
+{
+    return !(*this > compared_fraction);
+}
+
 /***********************************************************************
 The main constructor of the Fraction class.
 If both arguments are integers sets the first argument as the numerator,
