@@ -169,5 +169,40 @@ Is Greater or Equal Than operator for the Fraction class.
 */
 bool operator >= (const Fraction& left, const Fraction& right)
 {
-    return  ! operator < (left, right);
+    return ! operator < (left, right);
 }
+
+// Binary arithmetic operators
+Fraction& Fraction::operator += (const Fraction& right)
+{
+    this->numerator = numerator * right.denominator + right.numerator * denominator;
+    this->denominator = denominator * right.denominator;
+    this->validate();
+    return *this;
+}
+
+Fraction& Fraction::operator += (const double number)
+{
+    *this += Fraction(number);
+    return *this;
+}
+
+//Fraction& operator -= (const Fraction& right);
+//Fraction& operator -= (const double number);
+
+
+// Arithmetic functions
+Fraction operator + (Fraction left, const Fraction& right)
+{
+    left += right;
+    return left;
+}
+
+Fraction operator + (Fraction left, const double number)
+{
+    left += number;
+    return left;
+}
+
+//Fraction operator - (Fraction left, const Fraction& right);
+//Fraction operator - (Fraction left, const double number);

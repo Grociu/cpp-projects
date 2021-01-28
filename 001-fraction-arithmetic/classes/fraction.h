@@ -13,6 +13,11 @@ class Fraction
         Fraction(double x, double y);
         Fraction(double x);
         Fraction();
+        // Binary arithmetic operators
+        Fraction& operator += (const Fraction& right);
+        Fraction& operator += (const double number);
+        Fraction& operator -= (const Fraction& right);
+        Fraction& operator -= (const double number);
         // Methods
         void output();
         void simplify();
@@ -31,5 +36,11 @@ bool operator < (const Fraction& left, const Fraction& right);
 bool operator > (const Fraction& left, const Fraction& right);
 bool operator <= (const Fraction& left, const Fraction& right);
 bool operator >= (const Fraction& left, const Fraction& right);
+
+// Arithmetic functions
+Fraction operator + (Fraction left, const Fraction& right);
+Fraction operator + (Fraction left, const double number);
+Fraction operator - (Fraction left, const Fraction& right);
+Fraction operator - (Fraction left, const double number);
 
 #endif
