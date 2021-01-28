@@ -13,13 +13,6 @@ class Fraction
         Fraction(double x, double y);
         Fraction(double x);
         Fraction();
-        // Operators
-        bool operator == (Fraction compared_fraction);
-        bool operator != (Fraction compared_fraction);
-        bool operator > (Fraction compared_fraction);
-        bool operator >= (Fraction compared_fraction);
-        bool operator < (Fraction compared_fraction);
-        bool operator <= (Fraction compared_fraction);
         // Methods
         void output();
         void simplify();
@@ -30,5 +23,13 @@ class Fraction
 // Various Mathematical Functions
 int number_of_decimals(double x);
 int greatest_common_divisor(int x, int y);
+
+// Logic Operators
+bool operator == (const Fraction& left, const Fraction& right);
+bool operator != (const Fraction& left, const Fraction& right);
+bool operator < (const Fraction& left, const Fraction& right);
+bool operator > (const Fraction& left, const Fraction& right);
+bool operator <= (const Fraction& left, const Fraction& right);
+bool operator >= (const Fraction& left, const Fraction& right);
 
 #endif
