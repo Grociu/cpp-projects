@@ -361,6 +361,103 @@ TEST(FractionCompareTests, EqualsAreSmallerOrEqual)
 }
 
 /***********************************************************************
+FRACTION ADDITION
+***********************************************************************/
+TEST(FractionAdditionTests, BinaryAdditionBasicTest)
+{
+    Fraction test_fraction_1 = Fraction(1, 4);
+    Fraction test_fraction_2 = Fraction(1, 4);
+    test_fraction_1 += test_fraction_2;
+    EXPECT_EQ(test_fraction_1, Fraction(1, 2));
+}
+
+TEST(FractionAdditionTests, BinaryAdditionAddADouble)
+{
+    Fraction test_fraction_1 = Fraction(1, 4);
+    double number = 4;
+    test_fraction_1 += number;
+    EXPECT_EQ(test_fraction_1, Fraction(17, 4));
+}
+
+TEST(FractionAdditionTests, BinaryAdditionAddANeutralizer)
+{
+    Fraction test_fraction_1 = Fraction(1, 4);
+    Fraction test_fraction_2 = Fraction(-1, 4);
+    test_fraction_1 += test_fraction_2;
+    EXPECT_EQ(test_fraction_1, Fraction(0));
+}
+
+TEST(FractionAdditionTests, BinaryAdditionAddAZero)
+{
+    Fraction test_fraction_1 = Fraction(1, 4);
+    double number = 0;
+    test_fraction_1 += number;
+    EXPECT_EQ(test_fraction_1, Fraction(1, 4));
+}
+
+TEST(FractionAdditionTests, AddTwoFractions)
+{
+    Fraction test_fraction_1 = Fraction(2, 7);
+    Fraction test_fraction_2 = Fraction(1, 4);
+    Fraction result = Fraction(15, 28); 
+    EXPECT_TRUE(test_fraction_1 + test_fraction_2 == result);
+}
+
+TEST(FractionAdditionTests, CorrectlyAddToZero)
+{
+    Fraction test_fraction_1 = Fraction(0);
+    Fraction test_fraction_2 = Fraction(1, 4);
+    Fraction result = Fraction(1, 4); 
+    EXPECT_TRUE(test_fraction_1 + test_fraction_2 == result);
+}
+
+TEST(FractionAdditionTests, CorrectlyAddAZero)
+{
+    Fraction test_fraction_1 = Fraction(1, 4);
+    Fraction test_fraction_2 = Fraction(0);
+    Fraction result = Fraction(1, 4); 
+    EXPECT_TRUE(test_fraction_1 + test_fraction_2 == result);
+}
+
+TEST(FractionAdditionTests, CorrectlyAddOpposites)
+{
+    Fraction test_fraction_1 = Fraction(3, 4);
+    Fraction test_fraction_2 = Fraction(-6, 8);
+    Fraction result = Fraction(0); 
+    EXPECT_TRUE(test_fraction_1 + test_fraction_2 == result);
+}
+
+TEST(FractionAdditionTests, CorrectlyAddDecimalFractions)
+{
+    Fraction test_fraction_1 = Fraction(34.765);
+    Fraction test_fraction_2 = Fraction(27.212);
+    Fraction result = Fraction(61.977); 
+    EXPECT_TRUE(test_fraction_1 + test_fraction_2 == result);
+}
+
+TEST(FractionAdditionTests, CorrectlyAddAConstantRightSide)
+{
+    Fraction test_fraction_1 = Fraction(3, 10);
+    double number = 12;
+    Fraction result = Fraction(123, 10); 
+    EXPECT_TRUE(test_fraction_1 + number == result);
+}
+
+TEST(FractionAdditionTests, CorrectlyAddAConstantLeftSide)
+{
+    Fraction test_fraction_1 = Fraction(3, 10);
+    double number = 12;
+    Fraction result = Fraction(123, 10); 
+    EXPECT_TRUE(number + test_fraction_1 == result);
+}
+
+TEST(FractionAdditionTests, MultipleAdditionTest)
+{
+    EXPECT_EQ(0 + Fraction(1, 2) + 8 + Fraction(-1, 2) + 2, Fraction(10));
+}
+
+
+/***********************************************************************
 ***********************************************************************/
 
 // main function for a Google Test CMake implementation
