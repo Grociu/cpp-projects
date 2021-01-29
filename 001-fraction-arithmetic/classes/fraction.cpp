@@ -173,6 +173,10 @@ bool operator >= (const Fraction& left, const Fraction& right)
 }
 
 // Binary arithmetic operators
+/*
+Binary operator for adding a Fraction object to another. A common denominator is reached,
+and the numerators are added. Original Fraction object is modified.
+*/
 Fraction& Fraction::operator += (const Fraction& right)
 {
     this->numerator = numerator * right.denominator + right.numerator * denominator;
@@ -181,28 +185,72 @@ Fraction& Fraction::operator += (const Fraction& right)
     return *this;
 }
 
+/*
+Binary addition for adding any number, be it integer or double.
+Number is converted to a fraction then added. Original Fraction object is modified.
+*/
 Fraction& Fraction::operator += (const double number)
 {
     *this += Fraction(number);
     return *this;
 }
 
-//Fraction& operator -= (const Fraction& right);
-//Fraction& operator -= (const double number);
+/*
+Binary subtraction for adding a Fraction object to another. Performs addition of Fraction
+that had its numerator multiplied by -1. Original Fraction object is modified.
+*/
+Fraction& Fraction::operator -= (const Fraction& right)
+{
+    *this += Fraction(-1 * right.numerator, right.denominator);
+    return *this;
+}
 
+
+/*
+Binary subtraction for adding an integer or double value to a Fraction object. 
+Converts the number to a Fraction object then subtract.
+Original Fraction object is modified.
+*/
+Fraction&  Fraction::operator -= (const double number)
+{
+    *this -= Fraction(number);
+    return *this;
+}
 
 // Arithmetic functions
+
+/*
+Addition of Fraction objects. Returns a new Fraction object.
+*/
 Fraction operator + (Fraction left, const Fraction& right)
 {
     left += right;
     return left;
 }
 
+/*
+Addition of a number to a Fraction object. Returns a new Fraction object.
+*/
 Fraction operator + (Fraction left, const double number)
 {
     left += number;
     return left;
 }
 
-//Fraction operator - (Fraction left, const Fraction& right);
-//Fraction operator - (Fraction left, const double number);
+/*
+Subtraction operator for Fraction objects. Returns a new Fraction object.
+*/
+Fraction operator - (Fraction left, const Fraction& right)
+{
+    left -= right;
+    return left;
+}
+
+/*
+Subtractions of a number from a Fraction object. Returns a new Fraction object.
+*/
+Fraction operator - (Fraction left, const double number)
+{
+    left -= number;
+    return left;
+}
