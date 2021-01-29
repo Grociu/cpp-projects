@@ -455,7 +455,103 @@ TEST(FractionAdditionTests, MultipleAdditionTest)
 {
     EXPECT_EQ(0 + Fraction(1, 2) + 8 + Fraction(-1, 2) + 2, Fraction(10));
 }
+//VVV//
 
+/***********************************************************************
+FRACTION SUBTRACTION
+***********************************************************************/
+TEST(FractionSubtractionTests, BinarySubtractionBasicTest)
+{
+    Fraction test_fraction_1 = Fraction(1, 2);
+    Fraction test_fraction_2 = Fraction(1, 4);
+    test_fraction_1 -= test_fraction_2;
+    EXPECT_EQ(test_fraction_1, Fraction(1, 4));
+}
+
+TEST(FractionSubtractionTests, BinarySubtractionSubtraAdditionAddADouble)
+{
+    Fraction test_fraction_1 = Fraction(7, 4);
+    double number = 1;
+    test_fraction_1 -= number;
+    EXPECT_EQ(test_fraction_1, Fraction(3, 4));
+}
+
+TEST(FractionSubtractionTests, BinarySubtractANeutralizer)
+{
+    Fraction test_fraction_1 = Fraction(1, 4);
+    Fraction test_fraction_2 = Fraction(1, 4);
+    test_fraction_1 -= test_fraction_2;
+    EXPECT_EQ(test_fraction_1, Fraction(0));
+}
+
+TEST(FractionSubtractionTests, BinarySubtractionSubtractZero)
+{
+    Fraction test_fraction_1 = Fraction(1, 4);
+    double number = 0;
+    test_fraction_1 -= number;
+    EXPECT_EQ(test_fraction_1, Fraction(1, 4));
+}
+
+TEST(FractionSubtractionTests, SubtractTwoFractions)
+{
+    Fraction test_fraction_1 = Fraction(2, 7);
+    Fraction test_fraction_2 = Fraction(1, 4);
+    Fraction result = Fraction(1, 28); 
+    EXPECT_TRUE(test_fraction_1 - test_fraction_2 == result);
+}
+
+TEST(FractionSubtractionTests, CorrectlySubtractFromZero)
+{
+    Fraction test_fraction_1 = Fraction(0);
+    Fraction test_fraction_2 = Fraction(1, 4);
+    Fraction result = Fraction(-1, 4); 
+    EXPECT_TRUE(test_fraction_1 - test_fraction_2 == result);
+}
+
+TEST(FractionSubtractionTests, CorrectlySubtractAZero)
+{
+    Fraction test_fraction_1 = Fraction(1, 4);
+    Fraction test_fraction_2 = Fraction(0);
+    Fraction result = Fraction(1, 4); 
+    EXPECT_TRUE(test_fraction_1 - test_fraction_2 == result);
+}
+
+TEST(FractionSubtractionTests, CorrectlySubtractOpposites)
+{
+    Fraction test_fraction_1 = Fraction(3, 4);
+    Fraction test_fraction_2 = Fraction(-6, 8); // these add to 0
+    Fraction result = Fraction(3, 2); 
+    EXPECT_TRUE(test_fraction_1 - test_fraction_2 == result);
+}
+
+TEST(FractionSubtractionTests, CorrectlySubtractDecimalFractions)
+{
+    Fraction test_fraction_1 = Fraction(17.652);
+    Fraction test_fraction_2 = Fraction(9.763);
+    Fraction result = Fraction(7.889); 
+    EXPECT_TRUE(test_fraction_1 - test_fraction_2 == result);
+}
+
+TEST(FractionSubtractionTests, CorrectlySubtractAConstantRightSide)
+{
+    Fraction test_fraction_1 = Fraction(3, 10);
+    double number = 12;
+    Fraction result = Fraction(-117, 10); 
+    EXPECT_TRUE(test_fraction_1 - number == result);
+}
+
+TEST(FractionSubtractionTests, CorrectlySubtractFromAConstantLeftSide)
+{
+    Fraction test_fraction_1 = Fraction(3, 10);
+    double number = 12;
+    Fraction result = Fraction(117, 10); 
+    EXPECT_TRUE(number - test_fraction_1 == result);
+}
+
+TEST(FractionSubtractionTests, MultipleSubtractionTest)
+{
+    EXPECT_EQ(100 - Fraction(1, 2) - 8 - Fraction(-1, 2) - 2, Fraction(90));
+}
 
 /***********************************************************************
 ***********************************************************************/
