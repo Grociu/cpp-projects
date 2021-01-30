@@ -51,7 +51,8 @@ endif()
 
 # Creates the libraries from the classes directory
 add_library(Fraction classes/fraction.cpp)
-#add_library(DivideByZero classes/dividebyzero.cpp)
+add_library(DivideByZero classes/dividebyzero.cpp)
+
 #######################################################################
 # Unit Tests
 #######################################################################
@@ -62,7 +63,7 @@ add_executable(fractions_unittest tests/unittest.cpp)
 # Link unittest executable against gtest and project libraries
 target_link_libraries(fractions_unittest gtest)
 target_link_libraries(fractions_unittest Fraction)
-#target_link_libraries(fractions_unittest DivideByZero)
+target_link_libraries(fractions_unittest DivideByZero)
 
 # Enable testing with CMake Test functionality (Ctrl+Shift+P Cmake Test in VSC)
 enable_testing()
@@ -77,6 +78,7 @@ add_executable(fractions_main main.cpp)
 
 # Links the project libraries to the main executable
 target_link_libraries(fractions_main Fraction)
+target_link_libraries(fractions_main DivideByZero)
 
 ########################################################################
 # Installation
