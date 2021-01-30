@@ -1,5 +1,6 @@
 #include <iostream>
 #include "./classes/fraction.h"
+#include "./classes/dividebyzero.h"
 
 int main()
 {
