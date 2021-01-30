@@ -18,11 +18,16 @@ class Fraction
         Fraction& operator += (const double number);
         Fraction& operator -= (const Fraction& right);
         Fraction& operator -= (const double number);
+        Fraction& operator *= (const Fraction& right);
+        Fraction& operator *= (const double number);
+        Fraction& operator /= (const Fraction& right);
+        Fraction& operator /= (const double number);
         // Methods
         void output();
         void simplify();
         void sign();
         void validate();
+        void invert();
 };
 
 // Various Mathematical Functions
@@ -42,5 +47,9 @@ Fraction operator + (Fraction left, const Fraction& right);
 Fraction operator + (Fraction left, const double number);
 Fraction operator - (Fraction left, const Fraction& right);
 Fraction operator - (Fraction left, const double number);
+Fraction operator * (Fraction left, const Fraction& right);
+Fraction operator * (Fraction left, const double number);
+Fraction operator / (Fraction left, const Fraction& right);
+Fraction operator / (Fraction left, const double number);
 
 #endif

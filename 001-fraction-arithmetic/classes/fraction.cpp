@@ -1,5 +1,6 @@
 #include <cmath>
 #include <iostream>
+#include "dividebyzero.h"
 #include "fraction.h"
 
 /*
@@ -63,12 +64,25 @@ void Fraction::sign()
     this->denominator = abs(this->denominator);
 }
 
+void Fraction::invert()
+{
+    long int temp;
+    temp = numerator;
+    this->numerator = denominator;
+    this->denominator = temp;
+    this->validate();
+}
+
 /*
 Perform a series of checks to determine the correcto representation of the 
 fraction.
 */
 void Fraction::validate()
 {
+    if(denominator == 0)
+    {
+        throw DivideByZeroError();
+    }
     this->simplify();
     this->sign();
 }
@@ -211,13 +225,43 @@ Binary subtraction for adding an integer or double value to a Fraction object.
 Converts the number to a Fraction object then subtract.
 Original Fraction object is modified.
 */
-Fraction&  Fraction::operator -= (const double number)
+Fraction& Fraction::operator -= (const double number)
 {
     *this -= Fraction(number);
     return *this;
 }
 
-// Arithmetic functions
+Fraction& Fraction::operator *= (const Fraction& right)
+{
+    this->numerator = numerator * right.numerator;
+    this->denominator = denominator * right.denominator;
+    this->validate();
+    return *this;
+}
+
+Fraction& Fraction::operator *= (const double number)
+{
+    *this *= Fraction(number);
+    return *this;
+}
+
+Fraction& Fraction::operator /= (const Fraction& right)
+{
+    Fraction temp = right;
+    temp.invert();
+    *this *= temp;
+    return *this;
+}
+
+Fraction& Fraction::operator /= (const double number)
+{
+    *this *= Fraction(1, number);
+    return *this;
+}
+
+/***********************************************************************
+Arithmetic functions
+***********************************************************************/
 
 /*
 Addition of Fraction objects. Returns a new Fraction object.
@@ -252,5 +296,29 @@ Subtractions of a number from a Fraction object. Returns a new Fraction object.
 Fraction operator - (Fraction left, const double number)
 {
     left -= number;
+    return left;
+}
+
+Fraction operator * (Fraction left, const Fraction& right)
+{
+    left *= right;
+    return left;
+}
+
+Fraction operator * (Fraction left, const double number)
+{
+    left *= number;
+    return left;
+}
+
+Fraction operator / (Fraction left, const Fraction& right)
+{
+    left /= right;
+    return left;
+}
+
+Fraction operator / (Fraction left, const double number)
+{
+    left /= number;
     return left;
 }
