@@ -1,4 +1,5 @@
 #include "../classes/fraction.h"
+#include "../classes/dividebyzero.h"
 #include "gtest/gtest.h"
 
 /***********************************************************************
@@ -57,6 +58,11 @@ TEST(GCDTests, GCDFunctionTestLongAlgorithm)
 /***********************************************************************
 THESE TESTS CHECK IF THE FRACTIONS ARE CREATED CORRECTLY
 ***********************************************************************/
+TEST(FractionCreationTests, DenominatorCannotBeZero) // Zero cannot be a denominator
+{
+    Fraction test_fraction;
+    EXPECT_THROW(test_fraction = Fraction(7, 0), DivideByZeroError);
+}
 
 TEST(FractionCreationTests, FractionCreatedFromTwoArguments)
 {
@@ -129,12 +135,13 @@ TEST(FractionCreationTests, FractionCreatedFromDecimalArgumentsisSimplified)
 // Fraction making algorithm for decimal numbers.
 TEST(FractionCreationTests, PrecisionTestingForFractionCreation)
 {
-    const int test_cases_size = 26;
+    const int test_cases_size = 27;
     double test_cases[][3] =
     {
         {0, 0, 1},  // double, numerator, denominator
         {-54342, -54342, 1},
         {1.1, 11, 10},
+        {1.5, 3, 2},
         {1.8, 9, 5},
         {-1.7, -17, 10},
         {-1.8, -9, 5},
@@ -157,7 +164,7 @@ TEST(FractionCreationTests, PrecisionTestingForFractionCreation)
         {6.123453, 6123453, 1000000},
         {6.250252, 1562563, 250000},
         {-6.666666, -3333333, 500000},
-        {-6.969696, -217803, 31250} //size 26
+        {-6.969696, -217803, 31250} //size 27
     };
     for(int i = 0; i < test_cases_size; i++)
     {
@@ -165,6 +172,64 @@ TEST(FractionCreationTests, PrecisionTestingForFractionCreation)
         EXPECT_EQ(test_fraction.numerator, test_cases[i][1]) << "Unprecise conversion of " << test_cases[i][0] << std::endl;
         EXPECT_EQ(test_fraction.denominator, test_cases[i][2]) << "Unprecise conversion of " << test_cases[i][0] << std::endl;
     }
+}
+
+/***********************************************************************
+SIMPLIFY() METHOD TESTS
+***********************************************************************/
+
+TEST(SimplifyFunctionTests, SimpleFractionSimplifiesToSelf)
+{
+    Fraction test_fraction;
+    test_fraction.numerator = 7;
+    test_fraction.denominator = 12;
+    test_fraction.simplify();
+    EXPECT_EQ(test_fraction.numerator, 7);
+    EXPECT_EQ(test_fraction.denominator, 12);
+}
+
+TEST(SimplifyFunctionTests, SimplifyIrregularFraction)
+{
+    Fraction test_fraction;
+    test_fraction.numerator = 120;
+    test_fraction.denominator = 360;
+    test_fraction.simplify();
+    EXPECT_EQ(test_fraction.numerator, 1);
+    EXPECT_EQ(test_fraction.denominator, 3);
+}
+
+TEST(SimplifyFunctionTests, SimplifyIrregularNegativeFraction)
+{
+    Fraction test_fraction;
+    test_fraction.numerator = -150;
+    test_fraction.denominator = 360;
+    test_fraction.simplify();
+    EXPECT_EQ(test_fraction.numerator, -5);
+    EXPECT_EQ(test_fraction.denominator, 12);
+}
+
+/***********************************************************************
+INVERT() METHOD TESTS
+***********************************************************************/
+
+TEST(InvertFunctionTests, AFractionIsInverted)
+{
+    Fraction test_fraction = Fraction(7, 12);
+    test_fraction.invert();
+    EXPECT_EQ(test_fraction, Fraction(12, 7));
+}
+
+TEST(InvertFunctionTests, AFractionThatIsAWholeNumberIsInverted)
+{
+    Fraction test_fraction = Fraction(9);
+    test_fraction.invert();
+    EXPECT_EQ(test_fraction, Fraction(1, 9));
+}
+
+TEST(InvertFunctionTests, ZeroCannotBeInverted) // Zero does not have a number that multiplies it to 1
+{
+    Fraction test_fraction = Fraction();
+    EXPECT_THROW(test_fraction.invert(), DivideByZeroError);
 }
 
 /***********************************************************************
@@ -460,6 +525,7 @@ TEST(FractionAdditionTests, MultipleAdditionTest)
 /***********************************************************************
 FRACTION SUBTRACTION
 ***********************************************************************/
+
 TEST(FractionSubtractionTests, BinarySubtractionBasicTest)
 {
     Fraction test_fraction_1 = Fraction(1, 2);
@@ -551,6 +617,269 @@ TEST(FractionSubtractionTests, CorrectlySubtractFromAConstantLeftSide)
 TEST(FractionSubtractionTests, MultipleSubtractionTest)
 {
     EXPECT_EQ(100 - Fraction(1, 2) - 8 - Fraction(-1, 2) - 2, Fraction(90));
+}
+
+/***********************************************************************
+FRACTION MULTIPLICATION
+***********************************************************************/
+
+TEST(FractionMultiplicationTests, BinaryMultiplicationBasicTest)
+{
+    Fraction test_fraction_1 = Fraction(4, 7);
+    Fraction test_fraction_2 = Fraction(2, 5);
+    test_fraction_1 *= test_fraction_2;
+    EXPECT_EQ(test_fraction_1, Fraction(8, 35));
+}
+
+TEST(FractionMultiplicationTests, BinaryMultiplicationByANumber)
+{
+    Fraction test_fraction_1 = Fraction(5, 4);
+    double number = 5;
+    test_fraction_1 *= number;
+    EXPECT_EQ(test_fraction_1, Fraction(25, 4));
+}
+
+TEST(FractionMultiplicationTests, BinaryMultiplicationByAUnit)
+{
+    Fraction test_fraction_1 = Fraction(5, 4);
+    double number = 1;
+    test_fraction_1 *= number;
+    EXPECT_EQ(test_fraction_1, Fraction(5, 4));
+}
+
+TEST(FractionMultiplicationTests, BinaryMultiplicationMultiplyByInverse)
+{
+    Fraction test_fraction_1 = Fraction(1, 4);
+    Fraction test_fraction_2 = Fraction(4);
+    test_fraction_1 *= test_fraction_2;
+    EXPECT_EQ(test_fraction_1, Fraction(1));
+}
+
+TEST(FractionMultiplicationTests, BinaryMultiplicationMultiplyByZero)
+{
+    Fraction test_fraction_1 = Fraction(1, 4);
+    double number = 0;
+    test_fraction_1 *= number;
+    EXPECT_EQ(test_fraction_1, Fraction());
+}
+
+TEST(FractionMultiplicationTests, MultiplyTwoFractions)
+{
+    Fraction test_fraction_1 = Fraction(-2, 7);
+    Fraction test_fraction_2 = Fraction(1, 4);
+    Fraction result = Fraction(-2, 28);
+    EXPECT_TRUE(test_fraction_1 * test_fraction_2 == result);
+}
+
+TEST(FractionMultiplicationTests, CorrectlyMultiplyByFractionZero)
+{
+    Fraction test_fraction_1 = Fraction(0);
+    Fraction test_fraction_2 = Fraction(1, 4);
+    Fraction result = Fraction(0);
+    EXPECT_TRUE(test_fraction_1 * test_fraction_2 == result);
+}
+
+TEST(FractionMultiplicationTests, CorrectlyMultiplyAFractionandAUnit)
+{
+    Fraction test_fraction_1 = Fraction(1, 4);
+    Fraction test_fraction_2 = Fraction(1);
+    Fraction result = Fraction(1, 4);
+    EXPECT_TRUE(test_fraction_1 * test_fraction_2 == result);
+}
+
+TEST(FractionMultiplicationTests, CorrectlyMultiplyByInverse)
+{
+    Fraction test_fraction_1 = Fraction(3, 4);
+    Fraction test_fraction_2 = Fraction(8, 6);
+    Fraction result = Fraction(1);
+    EXPECT_TRUE(test_fraction_1 * test_fraction_2 == result);
+}
+
+TEST(FractionMultiplicationTests, CorrectlyMultiplyDecimalFractions)
+{
+    Fraction test_fraction_1 = Fraction(1.4);
+    Fraction test_fraction_2 = Fraction(1.5);
+    Fraction result = Fraction(2.1);
+    EXPECT_TRUE(test_fraction_1 * test_fraction_2 == result);
+}
+
+TEST(FractionMultiplicationTests, CorrectlyMultiplyByConstantRightSide)
+{
+    Fraction test_fraction_1 = Fraction(3, 10);
+    double number = 12;
+    Fraction result = Fraction(36, 10);
+    EXPECT_TRUE(test_fraction_1 * number == result);
+}
+
+TEST(FractionDivisionTests, CorrectlyMultiplyByADouble)
+{
+    Fraction test_fraction_1 = Fraction(1, 4);
+    double number = 1.25;
+    Fraction result = Fraction(3125, 10000);
+    EXPECT_TRUE(test_fraction_1 * number == result);
+}
+
+TEST(FractionMultiplicationTests, CorrectlyMultiplyByConstantLeftSide)
+{
+    Fraction test_fraction_1 = Fraction(3, 10);
+    double number = 12;
+    Fraction result = Fraction(36, 10);
+    EXPECT_TRUE(number * test_fraction_1 == result);
+}
+
+TEST(FractionMultiplicationTests, CorrectlyMultiplyTwoNegativeFractions)
+{
+    Fraction test_fraction_1 = Fraction(-1, 10);
+    Fraction test_fraction_2 = Fraction(-1, 10);
+    Fraction result = Fraction(1, 100);
+    EXPECT_TRUE(test_fraction_1 * test_fraction_2 == result);
+}
+
+TEST(FractionMultiplicationTests, MultipleMultiplicationsInOneExpression)
+{
+    EXPECT_EQ(2 * Fraction(1, 2) * Fraction(3, 4) * 3 * Fraction(-1, 2) * 1.5, Fraction(-1.6875));
+}
+
+/***********************************************************************
+FRACTION DIVISION
+***********************************************************************/
+
+TEST(FractionDivisionTests, BinaryDivisionBasicTest)
+{
+    Fraction test_fraction_1 = Fraction(4, 7);
+    Fraction test_fraction_2 = Fraction(2, 5);
+    test_fraction_1 /= test_fraction_2;
+    EXPECT_EQ(test_fraction_1, Fraction(20, 14));
+}
+
+TEST(FractionDivisionTests, BinaryDivisionByANumber)
+{
+    Fraction test_fraction_1 = Fraction(5, 4);
+    double number = 5;
+    test_fraction_1 /= number;
+    EXPECT_EQ(test_fraction_1, Fraction(1, 4));
+}
+
+TEST(FractionDivisionTests, BinaryDivisionByAUnit)
+{
+    Fraction test_fraction_1 = Fraction(5, 4);
+    double number = 1;
+    test_fraction_1 /= number;
+    EXPECT_EQ(test_fraction_1, Fraction(5, 4));
+}
+
+TEST(FractionDivisionTests, BinaryDivisionBySelf)
+{
+    Fraction test_fraction_1 = Fraction(1, 4);
+    Fraction test_fraction_2 = Fraction(1, 4);
+    test_fraction_1 /= test_fraction_2;
+    EXPECT_EQ(test_fraction_1, Fraction(1));
+}
+
+TEST(FractionDivisionTests, BinaryDivisionByZeroIsError)
+{
+    Fraction test_fraction_1 = Fraction(1, 4);
+    double number = 0;
+    EXPECT_THROW(test_fraction_1 /= number, DivideByZeroError);
+}
+
+TEST(FractionDivisionTests, BinaryDivisionOfFractionZeroIsAllowed)
+{
+    Fraction test_fraction_1 = Fraction(0);
+    Fraction test_fraction_2 = Fraction(1, 4);
+    test_fraction_1 /= test_fraction_2;
+    EXPECT_EQ(test_fraction_1, Fraction(0));
+}
+
+TEST(FractionDivisionTests, DivideTwoFractions)
+{
+    Fraction test_fraction_1 = Fraction(-2, 7);
+    Fraction test_fraction_2 = Fraction(1, 4);
+    Fraction result = Fraction(-8, 7);
+    EXPECT_TRUE(test_fraction_1 / test_fraction_2 == result);
+}
+
+TEST(FractionDivisionTests, ZeroCanBeDividedByAFracion)
+{
+    Fraction test_fraction_1 = Fraction(0);
+    Fraction test_fraction_2 = Fraction(1, 4);
+    Fraction result = Fraction(0);
+    EXPECT_TRUE(test_fraction_1 / test_fraction_2 == result);
+}
+
+TEST(FractionDivisionTests, CorrectlyDivideAFractionAndAUnit)
+{
+    Fraction test_fraction_1 = Fraction(1, 4);
+    Fraction test_fraction_2 = Fraction(1);
+    Fraction result = Fraction(1, 4);
+    EXPECT_TRUE(test_fraction_1 / test_fraction_2 == result);
+}
+
+TEST(FractionDivisionTests, CorrectlyDivideBySelf)
+{
+    Fraction test_fraction_1 = Fraction(3, 4);
+    Fraction test_fraction_2 = Fraction(3, 4);
+    Fraction result = Fraction(1);
+    EXPECT_TRUE(test_fraction_1 / test_fraction_2 == result);
+}
+
+TEST(FractionDivisionTests, CorrectlyDivideDecimalFractions)
+{
+    Fraction test_fraction_1 = Fraction(1.4);
+    Fraction test_fraction_2 = Fraction(1.5);
+    Fraction result = Fraction(14, 15);
+    EXPECT_TRUE(test_fraction_1 / test_fraction_2 == result);
+}
+
+TEST(FractionDivisionTests, CorrectlyDivideAFractionByADouble)
+{
+    Fraction test_fraction_1 = Fraction(1, 4);
+    double number = 1.25;
+    Fraction result = Fraction(2, 10);
+    EXPECT_TRUE(test_fraction_1 / number == result);
+}
+
+TEST(FractionDivisionTests, CorrectlyDivideByConstantRightSide)
+{
+    Fraction test_fraction_1 = Fraction(3, 10);
+    double number = 12;
+    Fraction result = Fraction(3, 120);
+    EXPECT_TRUE(test_fraction_1 / number == result);
+}
+
+TEST(FractionDivisionTests, CorrectlyMultiplyByConstantLeftSide)
+{
+    Fraction test_fraction_1 = Fraction(3, 10);
+    double number = 12;
+    Fraction result = Fraction(120, 3);
+    EXPECT_TRUE(number / test_fraction_1 == result);
+}
+
+TEST(FractionDivisionTests, CorrectlyDivideTwoNegativeFractions)
+{
+    Fraction test_fraction_1 = Fraction(-1, 10);
+    Fraction test_fraction_2 = Fraction(-1, 100);
+    Fraction result = Fraction(10);
+    EXPECT_TRUE(test_fraction_1 / test_fraction_2 == result);
+}
+
+TEST(FractionDivisionTests, MultipleDivisionsInOneExpression)
+{
+    EXPECT_EQ(2 / Fraction(1, 2) / Fraction(3, 4) / 3 / Fraction(-1, 2) / 1.5, Fraction(-320, 135));
+}
+
+TEST(FractionDivisionTests, DivisionByIntegerZeroThrowsError)
+{
+    Fraction test_fraction_1 = Fraction(1, 8);
+    double number = 0;
+    EXPECT_THROW(test_fraction_1 / number, DivideByZeroError);
+}
+
+TEST(FractionDivisionTests, DivisionOfZeroByFractionIsAllowed)
+{
+    double number = 0;
+    Fraction test_fraction_1 = Fraction(1, 4);
+    EXPECT_EQ(number / test_fraction_1, Fraction(0));
 }
 
 /***********************************************************************
