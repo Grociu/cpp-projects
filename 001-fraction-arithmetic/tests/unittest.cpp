@@ -883,6 +883,45 @@ TEST(FractionDivisionTests, DivisionOfZeroByFractionIsAllowed)
 }
 
 /***********************************************************************
+POW FUNCTION TESTS
+***********************************************************************/
+
+TEST(PowFunctionTests, PowRaisesASimpleFraction)
+{
+    Fraction test_fraction = Fraction(3, 4);
+    int exponent = 2;
+    EXPECT_EQ(power(test_fraction, exponent), Fraction(9, 16));
+}
+
+TEST(PowFunctionTests, PowRaisesZero)
+{
+    Fraction test_fraction = Fraction(0);
+    int exponent = 7;
+    EXPECT_EQ(power(test_fraction, exponent), Fraction(0));
+}
+
+TEST(PowFunctionTests, PowRaisesUnit)
+{
+    Fraction test_fraction = Fraction(1);
+    int exponent = 10;
+    EXPECT_EQ(power(test_fraction, exponent), Fraction(1));
+}
+
+TEST(PowFunctionTests, PowRaisesToNegativePower)
+{
+    Fraction test_fraction = Fraction(3, 4);
+    int exponent = -1;
+    EXPECT_EQ(power(test_fraction, exponent), Fraction(4, 3));
+}
+
+TEST(PowFunctionTests, PowThrowsErrorWhenRaisingZeroToNegativePower)
+{
+    Fraction test_fraction = Fraction(0);
+    int exponent = -5;
+    EXPECT_THROW(power(test_fraction, exponent), DivideByZeroError);
+}
+
+/***********************************************************************
 ***********************************************************************/
 
 // main function for a Google Test CMake implementation
