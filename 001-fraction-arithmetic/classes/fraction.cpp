@@ -409,3 +409,22 @@ Fraction operator / (Fraction left, const double number)
     left /= number;
     return left;
 }
+
+/*
+pow() function overload for a Fraction object.
+Raises the Fraction 'base' to the power of 'exponent'. Currently only valid for integer exponents.
+*/
+Fraction power(Fraction base, int exponent)
+{
+    if(exponent < 0)
+    {
+        if(base.numerator == 0) {throw DivideByZeroError();}
+        base.invert();
+        return power(base, -exponent);
+    }
+    Fraction result;
+    result.numerator = powl(base.numerator, exponent);
+    result.denominator = powl(base.denominator, exponent);
+    result.validate();
+    return result;
+}

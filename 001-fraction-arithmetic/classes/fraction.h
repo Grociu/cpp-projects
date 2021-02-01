@@ -33,6 +33,7 @@ class Fraction
 // Various Mathematical Functions
 bool is_whole_number(double x, short precision);
 long int greatest_common_divisor(long int x, long int y);
+Fraction power(Fraction base, int exponent);
 
 
 // Logic Operators
