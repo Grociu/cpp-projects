@@ -31,8 +31,9 @@ class Fraction
 };
 
 // Various Mathematical Functions
-int number_of_decimals(double x);
-int greatest_common_divisor(int x, int y);
+bool is_whole_number(double x, short precision);
+long int greatest_common_divisor(long int x, long int y);
+
 
 // Logic Operators
 bool operator == (const Fraction& left, const Fraction& right);

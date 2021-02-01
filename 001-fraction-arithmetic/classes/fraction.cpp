@@ -3,14 +3,31 @@
 #include "dividebyzero.h"
 #include "fraction.h"
 
+/* 
+Checks whether a double number is an integer with a given precision degree.
+As decimal numbers declared as double values are not represented precisely, 
+a method of checking if in fact it is an integer has to be devised.
+Ex. 1.23 is actually  1.229999999999999982
+Current implementation takes the number 'x' and a degree of 'precision'.
+A number is deemed a whole number when abs of its' decimal part is smaller than 10^-(precision)
+Ex. 123.199.. - 123 = .199 > 0.1 - not a whole number
+Ex. 1231.99.. - 1232 = .000. < 0.1 - whole number
+*/
+bool is_whole_number(double x, short precision)
+{
+    double x_remainder = fabs(x - round(x));  // fabs is float abs
+    double margin = pow(10, -(precision));
+    return x_remainder < margin;
+}
+
 /*
 Implementation of Euclidean algorithm to find the greatest common divisor of
 positive integers 'x' and 'y'.
 https://en.wikipedia.org/wiki/Euclidean_algorithm
 */
-int greatest_common_divisor(int x, int y)
+long int greatest_common_divisor(long int x, long int y)
 {
-    int temp;
+    long int temp;
     while(y != 0)
     {
         temp = y;
@@ -35,8 +52,8 @@ greatest common divisor.
 */
 void Fraction::simplify()
 {
-    int hcd = greatest_common_divisor(
-        abs(this->numerator), abs(this->denominator)
+    long int hcd = greatest_common_divisor(
+        labs(this->numerator), labs(this->denominator)
         );
     this->numerator = this->numerator / hcd;
     this->denominator = this->denominator / hcd;
@@ -60,10 +77,15 @@ void Fraction::sign()
     {
         positive = !positive;
     }
-    this->numerator = positive ? abs(this->numerator) : -abs(this->numerator);  // ternary operator
-    this->denominator = abs(this->denominator);
+    this->numerator = positive ? labs(this->numerator) : -labs(this->numerator);  // ternary operator
+    this->denominator = labs(this->denominator);  // labs is long abs
 }
 
+/*
+Inverts a Fraction object.
+Switches the values of the numerator and denominator, keeps the sign in the numerator.
+Contains a validation step - catches zero division.
+*/
 void Fraction::invert()
 {
     long int temp;
@@ -74,8 +96,9 @@ void Fraction::invert()
 }
 
 /*
-Perform a series of checks to determine the correcto representation of the 
-fraction.
+Perform a series of checks to determine the correct representation of the 
+Fraction.
+Contains a validation of zero division.
 */
 void Fraction::validate()
 {
@@ -89,13 +112,19 @@ void Fraction::validate()
 
 /***********************************************************************
 The main constructor of the Fraction class.
+Covers multiple steps depending on the type of the arguments.
+Variant 1: 
 If both arguments are integers sets the first argument as the numerator,
 and the second as the denominator.
-If any are decimal numbers, performs a double division and the result is then
-multiplied by 10 to power of Fraction class precision (6).
-The numerator is then rounded, and both numerator and denominator are set to the
-correct values.
-Ex. 1.5 can be written as 1.5 * 10 / 10
+Variant 2:
+If both arguments convert to integers within the margin of precision,
+they are gradually multiplied by 10 to a point where they are whole numbers.
+Then the new alues are assigned to numerator and denominator.
+Variant 3:
+If any of the values are not within precision, they are divided and then multiplied by 10^precision,
+the result is rounded and assigned to numerator while 10^precision is assigned to numerator.
+to numerator and denominator.
+Ex. 1.5 can be written as 1.5 * 10 / 10 (Variant 2)
 Ex. 2.5 / 2.85 can be written as (2.5 * 10) * 100 / 10 * (2.85 * 100)
 Then a simplification is performed. Ex. 4/8 == 1/2
 Then a sign is extracted to the numerator.
@@ -103,21 +132,46 @@ Ex. 1 / -1 == -1 / 1 AND -2 / -3 == 2 / 3
 ***********************************************************************/
 Fraction::Fraction(double x, double y)
 {
+    // Phase 1 - are they both integers? Put them into numerator, denominator.
     if(x == int(x) && y == int(y))
     {
         this->numerator = x;
         this->denominator = y;
+        this->validate();
+        return;
     }
-    else
+    // Phase 2 - multiply both by 10 towards precision to get a representation via whole numbers
+    // This will convert simple fractions like 1.5 (2/3) without making the actual division
+    if (true)
     {
+        short decimals = 0;
+        const short p = this->precision;
+        while(decimals < p)
+        {
+            decimals++;
+            x *= 10;
+            y *= 10;
+            if(is_whole_number(x, p) && is_whole_number(y, p))
+            {
+                this->numerator = round(x);
+                this->denominator = round(y);
+                this->validate();
+                return;
+            }
+        }
+    }
+    // Phase 3 - divide the two numbers and return a rounded approximate solution
+    if (true)
+    {
+        long pow_of_precision = pow(10, this->precision);
         double value = x / y;
-        long int denominator = pow(10, this->precision);
-        value = value * denominator;
+        value = value * pow_of_precision;
         value = round(value);
         this->numerator = value;
-        this->denominator = denominator;
+        this->denominator = pow_of_precision;
+        this->validate();
+        return;
     }
-    this->validate();
 }
 
 Fraction::Fraction(double x) : Fraction::Fraction(x, 1) {} // This is called 'delegating constructors' it's a C++11 feature.
@@ -219,7 +273,6 @@ Fraction& Fraction::operator -= (const Fraction& right)
     return *this;
 }
 
-
 /*
 Binary subtraction for adding an integer or double value to a Fraction object. 
 Converts the number to a Fraction object then subtract.
@@ -231,6 +284,11 @@ Fraction& Fraction::operator -= (const double number)
     return *this;
 }
 
+/*
+Binary multiplicaton for multiplying a Fraction by another.
+Multiplies the numerators and denominators and then validates (simplifies) the Fraction object.
+Original Fraction object is modified.
+*/
 Fraction& Fraction::operator *= (const Fraction& right)
 {
     this->numerator = numerator * right.numerator;
@@ -239,12 +297,22 @@ Fraction& Fraction::operator *= (const Fraction& right)
     return *this;
 }
 
+/*
+Binary multiplicaton for multiplying a Fraction by a double value. 
+Converts the number to a Fraction object then multiplies.
+Original Fraction object is modified.
+*/
 Fraction& Fraction::operator *= (const double number)
 {
     *this *= Fraction(number);
     return *this;
 }
 
+/*
+Binary division for dividing a Fraction object by another.
+Inverts the fraction on the right and then performs the multiplication operation.
+Original Fraction object is modified.
+*/
 Fraction& Fraction::operator /= (const Fraction& right)
 {
     Fraction temp = right;
@@ -253,6 +321,11 @@ Fraction& Fraction::operator /= (const Fraction& right)
     return *this;
 }
 
+/*
+Binary division for dividing a Fraction by a double value. 
+Converts the number to an inverted Fraction object then multiplies.
+Original Fraction object is modified.
+*/
 Fraction& Fraction::operator /= (const double number)
 {
     *this *= Fraction(1, number);
@@ -299,24 +372,38 @@ Fraction operator - (Fraction left, const double number)
     return left;
 }
 
+/*
+Multiplication operator for Fraction objects. Returns a new Fraction object.
+*/
 Fraction operator * (Fraction left, const Fraction& right)
 {
     left *= right;
     return left;
 }
 
+/*
+Multiplication operator for Fraction objects and doubles.
+Returns a new Fraction object.
+*/
 Fraction operator * (Fraction left, const double number)
 {
     left *= number;
     return left;
 }
 
+/*
+Division operator for Fraction objects. Returns a new Fraction object.
+*/
 Fraction operator / (Fraction left, const Fraction& right)
 {
     left /= right;
     return left;
 }
 
+/*
+Division operator for Fraction objects and doubles.
+Returns a new Fraction object.
+*/
 Fraction operator / (Fraction left, const double number)
 {
     left /= number;
