@@ -3,7 +3,7 @@
 #include "dividebyzero.h"
 #include "fraction.h"
 
-/* 
+/*
 Checks whether a double number is an integer with a given precision degree.
 As decimal numbers declared as double values are not represented precisely, 
 a method of checking if in fact it is an integer has to be devised.
